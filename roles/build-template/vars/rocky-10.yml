@@ -1,10 +1,11 @@
 ---
 # Config per OS — data, bukan logika.
-image_url: https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base.latest.x86_64.qcow2
+# Pin ke nama versi (immutable). Jangan pakai -latest — race: CHECKSUM vs image bisa beda hash.
+image_url: https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base-10.2-20260525.0.x86_64.qcow2
 checksum_url: https://dl.rockylinux.org/pub/rocky/10/images/x86_64/CHECKSUM
 checksum_algorithm: sha256
 checksum_file: CHECKSUM
-image_file: Rocky-10-GenericCloud-Base.latest.x86_64.qcow2
+image_file: Rocky-10-GenericCloud-Base-10.2-20260525.0.x86_64.qcow2
 
 repo_dest_dir: /etc/yum.repos.d/
 repo_filename: local.repo

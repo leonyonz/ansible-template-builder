@@ -1,10 +1,11 @@
 ---
 # Config per OS — data, bukan logika.
-image_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
+# Pin ke nama versi (immutable). Jangan pakai -latest — race: CHECKSUM vs image bisa beda hash.
+image_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.8-20260526.x86_64.qcow2
 checksum_url: https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM
 checksum_algorithm: sha256
 checksum_file: CHECKSUM
-image_file: AlmaLinux-9-GenericCloud-latest.x86_64.qcow2
+image_file: AlmaLinux-9-GenericCloud-9.8-20260526.x86_64.qcow2
 
 repo_dest_dir: /etc/yum.repos.d/
 repo_filename: local.repo

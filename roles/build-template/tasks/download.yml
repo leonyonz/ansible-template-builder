@@ -15,11 +15,19 @@
   register: expected_sha
   changed_when: false
 
-- name: Download cloud image
+# checksum param: get_url bandingkan hash dest; beda → download ulang.
+# retries: download terpotong (network) → coba lagi otomatis, bukan langsung fail.
+- name: Download cloud image (checksum + retry)
   ansible.builtin.get_url:
     url: "{{ image_url }}"
     dest: "{{ workdir }}/{{ image_file }}"
+    checksum: "{{ checksum_algorithm }}:{{ expected_sha.stdout }}"
+    force: true
     timeout: 600
+  register: img_dl
+  retries: 3
+  delay: 10
+  until: img_dl is success
 
 - name: Verify image checksum
   ansible.builtin.stat:

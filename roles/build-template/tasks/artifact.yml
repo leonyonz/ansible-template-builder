@@ -1,0 +1,20 @@
+---
+- name: Buat direktori artifact
+  ansible.builtin.file:
+    path: "{{ artifact_dir }}"
+    state: directory
+
+- name: Compress ke artifact qcow2
+  ansible.builtin.command:
+    cmd: "qemu-img convert -O qcow2 -c {{ workdir }}/{{ image_file }} {{ artifact_dir }}/{{ artifact_name }}.qcow2"
+
+- name: Tulis build log
+  ansible.builtin.copy:
+    dest: "{{ artifact_dir }}/{{ artifact_name }}.log"
+    content: |
+      os: {{ os }}
+      built: {{ ansible_date_time.iso8601 }}
+      source: {{ image_url }}
+      kernel:
+      {{ kernel_ver.stdout | indent(2) }}
+      repo: repo lokal (lihat vars/{{ os }}.yml)

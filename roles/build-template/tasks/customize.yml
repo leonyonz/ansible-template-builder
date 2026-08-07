@@ -1,0 +1,65 @@
+---
+# Semua pakai virt-customize (libguestfs): edit image offline, tanpa boot VM.
+# Kalau update kernel gagal di chroot (dracut/grub error):
+#   fallback = boot VM sekali, update di dalam, shutdown, baru template.
+# Pakai form argv (bukan string) — biar isi --run-command tidak kepecah shell.
+- name: Stage repo config file
+  ansible.builtin.copy:
+    dest: "{{ workdir }}/{{ repo_filename }}"
+    content: "{{ repo_file_content }}"
+  when: repo_file_content | length > 0
+
+- name: Matikan repo bawaan (khusus dnf)
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ image_file }}"
+      - --run-command
+      - "{{ repo_disable_cmd }}"
+  when: repo_disable_cmd | length > 0
+
+- name: Inject repo config ke image
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ image_file }}"
+      - --copy-in
+      - "{{ workdir }}/{{ repo_filename }}:{{ repo_dest_dir }}"
+  when: repo_file_content | length > 0
+  # TODO: GPG key repo lokal — copy-in {{ role_path }}/files/<key> ke /etc/apt/trusted.gpg.d/
+
+- name: Update + upgrade packages (patch CVE, kernel)
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ image_file }}"
+      - --run-command
+      - "{{ update_cmd }}"
+  # urutan penting: repo lokal DULU (step di atas), baru update — biar narik dari mirror lokal
+
+- name: Baca versi kernel terpasang di image
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ image_file }}"
+      - --run-command
+      - "ls /boot/vmlinuz-*"
+  register: kernel_ver
+  changed_when: false
+
+- name: Bersihkan state (machine-id, log)
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ image_file }}"
+      - --truncate
+      - /etc/machine-id
+      - --truncate
+      - /var/lib/dbus/machine-id
+      - --delete
+      - /var/log/*

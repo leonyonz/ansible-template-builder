@@ -1,0 +1,8 @@
+---
+- name: Build OS template artifact
+  hosts: builder
+  gather_facts: true
+  vars:
+    os: ubuntu-24.04
+  roles:
+    - role: build-template

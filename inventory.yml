@@ -1,0 +1,8 @@
+all:
+  hosts:
+    builder:
+      ansible_connection: local
+      ansible_python_interpreter: /usr/bin/python3
+    # test_vm:  # TODO(platform): uncomment setelah deploy test VM bisa jalan
+    #   ansible_host: 10.0.0.50
+    #   ansible_user: root

@@ -1,0 +1,21 @@
+---
+# Config per OS — data, bukan logika.
+# Copy file ini buat OS baru (rocky-9, alma-9, debian-12), edit isinya.
+image_url: https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.img
+checksum_url: https://cloud-images.ubuntu.com/releases/noble/release/SHA256SUMS
+checksum_algorithm: sha256
+checksum_file: SHA256SUMS
+image_file: ubuntu-24.04-server-cloudimg-amd64.img
+
+repo_dest_dir: /etc/apt/sources.list.d/
+repo_filename: local.list
+repo_disable_cmd: ""
+
+# Repo lokal kantor — sesuaikan hostname/mirror path
+repo_file_content: |
+  deb https://mirror.biznetgio.com/ubuntu noble main universe
+  deb https://mirror.biznetgio.com/ubuntu noble-updates main universe
+  deb https://mirror.biznetgio.com/ubuntu noble-security main universe
+
+# full-upgrade: patch CVE + kernel ikut ter-upgrade
+update_cmd: "apt-get update -y && apt-get full-upgrade -y && apt-get autoremove -y && apt-get clean"

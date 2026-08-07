@@ -1,0 +1,4 @@
+---
+collections:
+  # dipakai verify-template.yml (deploy test VM ke PVE)
+  - community.proxmox

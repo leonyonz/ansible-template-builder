@@ -1,0 +1,28 @@
+---
+# Config per OS — data, bukan logika.
+image_url: https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2
+checksum_url: https://dl.rockylinux.org/pub/rocky/9/images/x86_64/CHECKSUM
+checksum_algorithm: sha256
+checksum_file: CHECKSUM
+image_file: Rocky-9-GenericCloud-Base.latest.x86_64.qcow2
+
+repo_dest_dir: /etc/yum.repos.d/
+repo_filename: local.repo
+repo_disable_cmd: "sed -i \"s/enabled=1/enabled=0/\" /etc/yum.repos.d/*.repo"
+
+repo_file_content: |
+  [baseos]
+  name=Rocky $releasever - BaseOS (local)
+  baseurl=https://mirror.biznetgio.com/rocky/9/BaseOS/x86_64/os/
+  enabled=1
+  gpgcheck=1
+  gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+  [appstream]
+  name=Rocky $releasever - AppStream (local)
+  baseurl=https://mirror.biznetgio.com/rocky/9/AppStream/x86_64/os/
+  enabled=1
+  gpgcheck=1
+  gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Rocky-9
+
+update_cmd: "dnf -y update && dnf -y autoremove && dnf clean all"

@@ -1,0 +1,33 @@
+---
+# Format checksum beda-beda per distro:
+#   Ubuntu/Debian: "hash  file" (SHA256SUMS / SHA512SUMS)
+#   Alma:          "hash  file" (CHECKSUM)
+#   Rocky:         "SHA256 (file) = hash" (CHECKSUM)
+# Ekstrak generik: cari hex hash pertama di baris yang cocok nama file.
+- name: Download checksum file
+  ansible.builtin.get_url:
+    url: "{{ checksum_url }}"
+    dest: "{{ workdir }}/{{ checksum_file }}"
+    timeout: 60
+
+- name: Extract expected checksum
+  ansible.builtin.shell: "grep -i '{{ image_file }}' {{ workdir }}/{{ checksum_file }} | grep -oE '[a-f0-9]{64,}' | head -1"
+  register: expected_sha
+  changed_when: false
+
+- name: Download cloud image
+  ansible.builtin.get_url:
+    url: "{{ image_url }}"
+    dest: "{{ workdir }}/{{ image_file }}"
+    timeout: 600
+
+- name: Verify image checksum
+  ansible.builtin.stat:
+    path: "{{ workdir }}/{{ image_file }}"
+    checksum_algorithm: "{{ checksum_algorithm }}"
+  register: img_stat
+
+- name: Fail on checksum mismatch
+  ansible.builtin.fail:
+    msg: "Checksum mismatch: expected {{ expected_sha.stdout }}, got {{ img_stat.stat.checksum }}"
+  when: img_stat.stat.checksum != expected_sha.stdout

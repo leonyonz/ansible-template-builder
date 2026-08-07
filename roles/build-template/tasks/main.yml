@@ -1,0 +1,12 @@
+---
+- name: Load config OS
+  ansible.builtin.include_vars: "{{ os }}.yml"
+
+- name: Step 1 - download image + verify checksum
+  ansible.builtin.include_tasks: download.yml
+
+- name: Step 2 - customize image (repo lokal, patch CVE, kernel)
+  ansible.builtin.include_tasks: customize.yml
+
+- name: Step 3 - artifact (compress + log)
+  ansible.builtin.include_tasks: artifact.yml

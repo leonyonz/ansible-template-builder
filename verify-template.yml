@@ -1,0 +1,43 @@
+---
+# VERIFY: deploy artifact -> assert -> destroy.
+# Ini test yang bikin template layak upload. Jalan manual setelah build.
+#
+# TODO(platform): pilih target test dulu.
+#   PVE:        community.proxmox.proxmox_kvm + cloudinit user-data
+#   CloudStack: uri module + apiKey signature (community.crypto.hmac)
+# Setelah deploy jalan: uncomment test_vm di inventory.yml, isi IP/ssh.
+- name: Verify built template
+  hosts: builder
+  gather_facts: true
+  vars:
+    os: ubuntu-24.04
+  tasks:
+    - name: Deploy test VM dari artifact
+      ansible.builtin.debug:
+        msg: "TODO: deploy artifacts/{{ os }}-{{ ansible_date_time.date }}.qcow2, tunggu SSH up, lalu assert di bawah"
+
+    # ===== ASSERT: jalan di test_vm, bukan builder =====
+    - name: Kernel = versi patch terbaru
+      ansible.builtin.command: uname -r
+      register: kr
+      changed_when: false
+      delegate_to: test_vm
+
+    - name: Repo lokal terpasang
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/local.list
+      delegate_to: test_vm
+
+    - name: Tidak ada pending security update (CVE bersih)
+      ansible.builtin.command: apt list --upgradable
+      register: upg
+      changed_when: false
+      delegate_to: test_vm
+      failed_when: "'security' in upg.stdout"
+
+    - name: Cloud-init jalan (hostname/ssh key dari platform)
+      ansible.builtin.stat:
+        path: /var/lib/cloud/instance/boot-finished
+      delegate_to: test_vm
+
+    # TODO: destroy test VM

@@ -1,0 +1,4 @@
+---
+workdir: /tmp/template-builder
+artifact_dir: "{{ playbook_dir }}/artifacts"
+artifact_name: "{{ os }}-{{ ansible_date_time.date }}"

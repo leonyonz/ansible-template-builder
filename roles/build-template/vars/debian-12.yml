@@ -1,0 +1,18 @@
+---
+# Config per OS — data, bukan logika.
+image_url: https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+checksum_url: https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS
+checksum_algorithm: sha512
+checksum_file: SHA512SUMS
+image_file: debian-12-genericcloud-amd64.qcow2
+
+repo_dest_dir: /etc/apt/sources.list.d/
+repo_filename: local.list
+repo_disable_cmd: ""
+
+repo_file_content: |
+  deb https://mirror.biznetgio.com/debian bookworm main
+  deb https://mirror.biznetgio.com/debian bookworm-updates main
+  deb https://mirror.biznetgio.com/debian-security bookworm-security main
+
+update_cmd: "apt-get update -y && apt-get full-upgrade -y && apt-get autoremove -y && apt-get clean"

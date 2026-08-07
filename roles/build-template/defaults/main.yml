@@ -1,5 +1,7 @@
 ---
-workdir: /tmp/template-builder
+# workdir di /var/tmp (disk-backed), BUKAN /tmp — /tmp sering tmpfs (RAM) kecil,
+# image 600MB x2 langsung penuh → get_url gagal "Failed to replace".
+workdir: /var/tmp/template-builder
 artifact_dir: "{{ playbook_dir }}/artifacts"
 artifact_name: "{{ os }}-{{ ansible_date_time.date }}"
 # RAM appliance libguestfs (MB). Naikkan kalau virt-customize kena OOM (qemu killed by signal 9).

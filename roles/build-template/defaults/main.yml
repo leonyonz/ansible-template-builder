@@ -2,3 +2,5 @@
 workdir: /tmp/template-builder
 artifact_dir: "{{ playbook_dir }}/artifacts"
 artifact_name: "{{ os }}-{{ ansible_date_time.date }}"
+# RAM appliance libguestfs (MB). Naikkan kalau virt-customize kena OOM (qemu killed by signal 9).
+virt_mem: 2048

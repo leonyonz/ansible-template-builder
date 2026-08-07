@@ -9,7 +9,9 @@ image_file: Rocky-10-GenericCloud-Base-10.2-20260525.0.x86_64.qcow2
 
 repo_dest_dir: /etc/yum.repos.d/
 repo_filename: local.repo
-repo_disable_cmd: "sed -i \"s/enabled=1/enabled=0/\" /etc/yum.repos.d/*.repo"
+# dnf5 baca repo dari 3 dir (/etc/yum.repos.d, /etc/yum/repos.d, /etc/distro.repos.d).
+# Hapus semua repo bawaan, biar local.repo satu-satunya — hindari duplikat ID baseos/appstream.
+repo_disable_cmd: "rm -f /etc/yum.repos.d/*.repo /etc/yum/repos.d/*.repo /etc/distro.repos.d/*.repo"
 
 repo_file_content: |
   [baseos]

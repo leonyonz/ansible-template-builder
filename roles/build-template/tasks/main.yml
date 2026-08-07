@@ -2,6 +2,11 @@
 - name: Load config OS
   ansible.builtin.include_vars: "{{ os }}.yml"
 
+- name: Pastikan workdir ada
+  ansible.builtin.file:
+    path: "{{ workdir }}"
+    state: directory
+
 - name: Step 1 - download image + verify checksum
   ansible.builtin.include_tasks: download.yml
 

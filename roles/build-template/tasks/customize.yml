@@ -68,9 +68,6 @@
       - "{{ workdir }}/{{ image_file }}"
       - --mem
       - "{{ virt_mem }}"
-      - --truncate
-      - /etc/machine-id
-      - --truncate
-      - /var/lib/dbus/machine-id
-      - --delete
-      - /var/log/*
+      - --run-command
+      # rm -f toleran file yang tidak ada (Alma/Rocky tidak punya /var/lib/dbus/machine-id)
+      - "rm -f /var/lib/dbus/machine-id && : > /etc/machine-id && rm -rf /var/log/*"

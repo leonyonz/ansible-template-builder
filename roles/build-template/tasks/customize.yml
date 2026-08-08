@@ -47,6 +47,20 @@
       - "{{ update_cmd }}"
   # urutan penting: repo lokal DULU (step di atas), baru update — biar narik dari mirror lokal
 
+- name: Regenerate initramfs per kernel (khusus dnf)
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ image_file }}"
+      - --mem
+      - "{{ virt_mem }}"
+      - --run-command
+      # dracut polos di chroot pakai uname -r = kernel appliance (salah).
+      # Loop eksplisit per kernel dari /boot → initramfs konsisten.
+      - "if command -v dracut >/dev/null 2>&1; then for k in /boot/vmlinuz-*; do v=${k#/boot/vmlinuz-}; dracut -f /boot/initramfs-$v.img \"$v\" 2>/dev/null; done; fi"
+  when: repo_disable_cmd | length > 0
+
 - name: Baca versi kernel terpasang di image
   ansible.builtin.command:
     argv:
